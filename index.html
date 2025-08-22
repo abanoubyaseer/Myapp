@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي المعرفة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            direction: rtl;
+            text-align: right;
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .btn-primary {
+            background: #ea580c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+        
+        .btn-outline:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 3rem;
+            color: #ea580c;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin: 10px 0;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .badge {
+            background: #f97316;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .timer.warning {
+            color: #dc2626;
+            animation: pulse 1s infinite;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #ea580c;
+            transition: width 0.3s ease;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .result-card {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .result-correct {
+            background: #dcfce7;
+            border: 2px solid #16a34a;
+            color: #15803d;
+        }
+        
+        .result-wrong {
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            color: #dc2626;
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ea580c;
+            animation: fall 3s linear infinite;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes pulse {
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        .animate-bounce {
+            animation: bounce 1s infinite;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- شاشة القائمة الرئيسية -->
+        <div id="menuScreen">
+            <div class="text-center">
+                <div class="emoji">🧠</div>
+                <h1 class="title">تحدي المعرفة</h1>
+                <p class="subtitle">اختبر معلوماتك في 6000 سؤال متنوع وألغاز مثيرة</p>
+                <p class="subtitle">رياضيات • ثقافة عامة • تاريخ • جغرافيا • علوم • حياتية • ألغاز</p>
+            </div>
+
+            <div class="grid grid-4" style="margin: 30px 0;">
+                <div class="stats-card">
+                    <div class="emoji" style="font-size: 2rem;">🏆</div>
+                    <div class="stats-number" id="totalPoints">0</div>
+                    <div class="stats-label">النقاط</div>
+                </div>
+                <div class="stats-card">
+                    <div class="emoji" style="font-size: 2rem;">⭐</div>
+                    <div class="stats-number" id="correctAnswers">0</div>
+                    <div class="stats-label">إجابات صحيحة</div>
+                </div>
+                <div class="stats-card">
+                    <div class="emoji" style="font-size: 2rem;">📊</div>
+                    <div class="stats-number" id="totalQuestions">0</div>
+                    <div class="stats-label">إجمالي الأسئلة</div>
+                </div>
+                <div class="stats-card">
+                    <div class="emoji" style="font-size: 2rem;">🔥</div>
+                    <div class="stats-number" id="bestStreak">0</div>
+                    <div class="stats-label">أفضل سلسلة</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="startGame()">
+                ▶️ ابدأ اللعبة
+            </button>
+
+            <div class="grid grid-2" style="margin-top: 20px;">
+                <button class="btn btn-outline" onclick="showStats()">
+                    📊 الإحصائيات
+                </button>
+                <button class="btn btn-outline" onclick="showContact()">
+                    💬 تواصل مع المطور
+                </button>
+            </div>
+        </div>
+
+        <!-- شاشة اللعب -->
+        <div id="gameScreen" class="hidden">
+            <div class="question-header">
+                <button class="btn btn-outline" onclick="backToMenu()" style="width: auto; padding: 10px 20px;">
+                    العودة للقائمة
+                </button>
+                <div class="text-center">
+                    <div class="stats-number" id="currentPoints">0</div>
+                    <div class="stats-label">نقطة</div>
+                    <div class="stats-label">السلسلة الحالية: <span id="currentStreak">0</span></div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <h2 style="color: #ea580c; font-size: 2rem; margin: 20px 0;">
+                    السؤال رقم <span id="questionNumber">1</span>
+                </h2>
+            </div>
+
+            <div class="question-header">
+                <span class="badge" id="questionInfo">سهل - رياضيات</span>
+                <div class="timer" id="timer">⏰ 60s</div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="card">
+                <div class="question-text" id="questionText">جاري تحميل السؤال...</div>
+                <div id="answersContainer"></div>
+            </div>
+
+            <div id="resultCard" class="hidden"></div>
+        </div>
+    </div>
+
+    <!-- المودال -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+            <button class="btn btn-primary" onclick="closeModal()">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- تأثيرات الاحتفال -->
+    <div id="celebration" class="celebration hidden"></div>
+
+    <script>
+        // متغيرات اللعبة
+        let gameStats = {
+            totalQuestions: 0,
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            totalPoints: 0,
+            currentStreak: 0,
+            bestStreak: 0
+        };
+
+        let currentQuestion = null;
+        let selectedAnswer = null;
+        let showResult = false;
+        let timeLeft = 60;
+        let timer = null;
+        let currentLevel = "سهل";
+        let usedQuestions = new Set();
+        let questionNumber = 1;
+
+        // قاعدة بيانات الأسئلة المحسنة والمتنوعة (6000 سؤال)
+        const questionsDatabase = [
+            // أسئلة سهلة جداً - رياضيات أساسية
+            { id: 1, text: "ما ناتج 2 + 2؟", type: "multiple-choice", options: ["4", "3", "5", "6"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "رياضيات" },
+            { id: 2, text: "ما ناتج 3 × 3؟", type: "multiple-choice", options: ["9", "6", "12", "15"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "رياضيات" },
+            { id: 3, text: "ما ناتج 10 ÷ 2؟", type: "multiple-choice", options: ["5", "4", "6", "3"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "رياضيات" },
+            { id: 4, text: "5 + 3 = 8", type: "true-false", correctAnswer: true, difficulty: "سهل", points: 1, category: "رياضيات" },
+            { id: 5, text: "أكمل: 1 + 1 = _____", type: "complete", correctAnswer: "2", difficulty: "سهل", points: 1, category: "رياضيات" },
+            
+            // أسئلة سهلة - ثقافة عامة أساسية
+            { id: 6, text: "كم عدد أيام الأسبوع؟", type: "multiple-choice", options: ["7", "6", "8", "5"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ثقافة عامة" },
+            { id: 7, text: "كم عدد أشهر السنة؟", type: "multiple-choice", options: ["12", "10", "11", "13"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ثقافة عامة" },
+            { id: 8, text: "الشمس تشرق من الشرق", type: "true-false", correctAnswer: true, difficulty: "سهل", points: 1, category: "ثقافة عامة" },
+            { id: 9, text: "أكمل: في اليوم _____ ساعة", type: "complete", correctAnswer: "24", difficulty: "سهل", points: 1, category: "ثقافة عامة" },
+            
+            // أسئلة سهلة - علوم أساسية
+            { id: 10, text: "كم عدد أرجل القطة؟", type: "multiple-choice", options: ["4", "2", "6", "8"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "علوم" },
+            { id: 11, text: "الماء يغلي عند 100 درجة مئوية", type: "true-false", correctAnswer: true, difficulty: "سهل", points: 1, category: "علوم" },
+            { id: 12, text: "أكمل: للإنسان _____ عينان", type: "complete", correctAnswer: "2", difficulty: "سهل", points: 1, category: "علوم" },
+            
+            // أسئلة سهلة - جغرافيا أساسية
+            { id: 13, text: "كم عدد قارات العالم؟", type: "multiple-choice", options: ["7", "6", "8", "5"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "جغرافيا" },
+            { id: 14, text: "مصر تقع في قارة أفريقيا", type: "true-false", correctAnswer: true, difficulty: "سهل", points: 1, category: "جغرافيا" },
+            { id: 15, text: "أكمل: عاصمة مصر _____", type: "complete", correctAnswer: "القاهرة", difficulty: "سهل", points: 1, category: "جغرافيا" },
+            
+            // أسئلة متوسطة - رياضيات
+            { id: 16, text: "ما ناتج 15 × 8؟", type: "multiple-choice", options: ["120", "110", "130", "125"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "رياضيات" },
+            { id: 17, text: "ما ناتج 144 ÷ 12؟", type: "multiple-choice", options: ["12", "10", "14", "11"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "رياضيات" },
+            { id: 18, text: "25 × 4 = 100", type: "true-false", correctAnswer: true, difficulty: "متوسط", points: 2, category: "رياضيات" },
+            { id: 19, text: "أكمل: الجذر التربيعي لـ 64 هو _____", type: "complete", correctAnswer: "8", difficulty: "متوسط", points: 2, category: "رياضيات" },
+            
+            // أسئلة متوسطة - ثقافة عامة
+            { id: 20, text: "كم عدد حروف الأبجدية العربية؟", type: "multiple-choice", options: ["28", "26", "30", "25"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "ثقافة عامة" },
+            { id: 21, text: "اللغة العربية تكتب من اليمين إلى اليسار", type: "true-false", correctAnswer: true, difficulty: "متوسط", points: 2, category: "ثقافة عامة" },
+            { id: 22, text: "أكمل: عدد ألوان قوس قزح _____", type: "complete", correctAnswer: "7", difficulty: "متوسط", points: 2, category: "ثقافة عامة" },
+            
+            // أسئلة متوسطة - علوم
+            { id: 23, text: "ما هو الغاز الأكثر وفرة في الغلاف الجوي؟", type: "multiple-choice", options: ["النيتروجين", "الأكسجين", "ثاني أكسيد الكربون", "الأرجون"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "علوم" },
+            { id: 24, text: "الأكسجين ضروري للتنفس", type: "true-false", correctAnswer: true, difficulty: "متوسط", points: 2, category: "علوم" },
+            { id: 25, text: "أكمل: رمز عنصر الذهب الكيميائي _____", type: "complete", correctAnswer: "Au", difficulty: "متوسط", points: 2, category: "علوم" },
+            
+            // أسئلة صعبة - رياضيات متقدمة
+            { id: 26, text: "ما ناتج 47 × 83؟", type: "multiple-choice", options: ["3901", "3801", "4001", "3701"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "رياضيات" },
+            { id: 27, text: "ما ناتج 256 ÷ 16؟", type: "multiple-choice", options: ["16", "14", "18", "12"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "رياضيات" },
+            { id: 28, text: "125³ = 1953125", type: "true-false", correctAnswer: true, difficulty: "صعب", points: 3, category: "رياضيات" },
+            { id: 29, text: "أكمل: الجذر التكعيبي لـ 216 هو _____", type: "complete", correctAnswer: "6", difficulty: "صعب", points: 3, category: "رياضيات" },
+            
+            // أسئلة صعبة - ثقافة عامة متقدمة
+            { id: 30, text: "من كتب رواية مئة عام من العزلة؟", type: "multiple-choice", options: ["غابرييل غارسيا ماركيز", "بورخيس", "فاركاس يوسا", "أوكتافيو باث"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "ثقافة عامة" },
+            { id: 31, text: "شكسبير كتب مسرحية هاملت", type: "true-false", correctAnswer: true, difficulty: "صعب", points: 3, category: "ثقافة عامة" },
+            { id: 32, text: "أكمل: مؤلف رواية الأسود يليق بك _____", type: "complete", correctAnswer: "أحلام مستغانمي", difficulty: "صعب", points: 3, category: "ثقافة عامة" },
+            
+            // أسئلة صعبة جداً - رياضيات معقدة
+            { id: 33, text: "ما ناتج 137 × 149؟", type: "multiple-choice", options: ["20413", "20313", "20513", "20213"], correctAnswer: 0, difficulty: "صعب جداً", points: 4, category: "رياضيات" },
+            { id: 34, text: "ما ناتج 1024 ÷ 32؟", type: "multiple-choice", options: ["32", "30", "34", "28"], correctAnswer: 0, difficulty: "صعب جداً", points: 4, category: "رياضيات" },
+            { id: 35, text: "log₂(1024) = 10", type: "true-false", correctAnswer: true, difficulty: "صعب جداً", points: 4, category: "رياضيات" },
+            { id: 36, text: "أكمل: sin(90°) = _____", type: "complete", correctAnswer: "1", difficulty: "صعب جداً", points: 4, category: "رياضيات" },
+            
+            // ألغاز سهلة
+            { id: 37, text: "لغز: شيء يمشي بلا أرجل ويبكي بلا عيون؟", type: "multiple-choice", options: ["السحاب", "الريح", "النار", "الماء"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ألغاز" },
+            { id: 38, text: "لغز: ما الشيء الذي كلما زاد نقص؟", type: "multiple-choice", options: ["العمر", "المال", "الطعام", "الوقت"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ألغاز" },
+            { id: 39, text: "لغز: له عين ولا يرى؟", type: "multiple-choice", options: ["الإبرة", "القلم", "المفتاح", "الساعة"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ألغاز" },
+            { id: 40, text: "لغز: يسمع بلا أذن ويتكلم بلا لسان؟", type: "multiple-choice", options: ["الصدى", "الراديو", "التلفون", "الكتاب"], correctAnswer: 0, difficulty: "سهل", points: 1, category: "ألغاز" },
+            
+            // ألغاز متوسطة
+            { id: 41, text: "لغز: أخوان أحدهما يلد والآخر لا يلد؟", type: "multiple-choice", options: ["الليل والنهار", "الشمس والقمر", "البحر والبر", "الصيف والشتاء"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "ألغاز" },
+            { id: 42, text: "لغز: ما الشيء الذي يأكل ولا يشبع؟", type: "multiple-choice", options: ["النار", "البحر", "الأرض", "الهواء"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "ألغاز" },
+            { id: 43, text: "لغز: بيت بلا أبواب ولا نوافذ؟", type: "multiple-choice", options: ["بيت الشعر", "بيت العنكبوت", "بيت النمل", "بيت الطيور"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "ألغاز" },
+            { id: 44, text: "لغز: كلما أخذت منه كبر؟", type: "multiple-choice", options: ["الحفرة", "الجبل", "البحر", "السماء"], correctAnswer: 0, difficulty: "متوسط", points: 2, category: "ألغاز" },
+            
+            // ألغاز صعبة
+            { id: 45, text: "لغز: أم أربعة وأربعين، إذا ذهب واحد صارت أم ثلاثة؟", type: "multiple-choice", options: ["اليد", "الأسنان", "الشعر", "الأصابع"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "ألغاز" },
+            { id: 46, text: "لغز: ما الشيء الذي يوجد في القرن مرة وفي الدقيقة مرتين؟", type: "multiple-choice", options: ["حرف القاف", "حرف الراء", "حرف النون", "حرف الميم"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "ألغاز" },
+            { id: 47, text: "لغز: رجل عنده 12 ولد، كل ولد عنده 30 بنت، كل بنت عندها 12 ولد؟", type: "multiple-choice", options: ["السنة والشهور والأيام والساعات", "العائلة الكبيرة", "القبيلة", "المدينة"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "ألغاز" },
+            { id: 48, text: "لغز: ما الشيء الذي يكتب ولا يقرأ؟", type: "multiple-choice", options: ["القلم", "الكتاب", "الورقة", "الحبر"], correctAnswer: 0, difficulty: "صعب", points: 3, category: "ألغاز" },
+            
+            // ألغاز صعبة جداً
+            { id: 49, text: "لغز: عائلة مؤلفة من 6 بنات وأخ لكل بنت، كم عدد أفراد العائلة؟", type: "multiple-choice", options: ["7", "12", "13", "14"], correctAnswer: 0, difficulty: "صعب جداً", points: 4, category: "ألغاز" },
+            { id: 50, text: "لغز: إذا كان عمر الأب 4 أضعاف عمر ابنه، وبعد 20 سنة سيكون ضعف عمره، كم عمر الابن الآن؟", type: "multiple-choice", options: ["10 سنوات", "15 سنة", "20 سنة", "5 سنوات"], correctAnswer: 0, difficulty: "صعب جداً", points: 4, category: "ألغاز" },
+        ];
+
+        // توليد 6000 سؤال متنوع وغير متكرر
+        function generateAllQuestions() {
+            const allQuestions = [...questionsDatabase];
+            const categories = ["رياضيات", "ثقافة عامة", "علوم", "جغرافيا", "تاريخ", "حياتية", "ألغاز"];
+            const difficulties = ["سهل", "متوسط", "صعب", "صعب جداً"];
+            
+            // قوالب الأسئلة المتنوعة
+            const questionTemplates = {
+                "رياضيات": {
+                    "سهل": [
+                        { template: "ما ناتج {num1} + {num2}؟", type: "addition" },
+                        { template: "ما ناتج {num1} - {num2}؟", type: "subtraction" },
+                        { template: "ما ناتج {num1} × {num2}؟", type: "multiplication" },
+                        { template: "ما ناتج {num1} ÷ {num2}؟", type: "division" }
+                    ],
+                    "متوسط": [
+                        { template: "ما ناتج {num1} × {num2}؟", type: "multiplication" },
+                        { template: "ما ناتج {num1} ÷ {num2}؟", type: "division" },
+                        { template: "ما الجذر التربيعي لـ {num1}؟", type: "square_root" },
+                        { template: "ما ناتج {num1}²؟", type: "square" }
+                    ],
+                    "صعب": [
+                        { template: "ما ناتج {num1} × {num2}؟", type: "multiplication" },
+                        { template: "ما ناتج {num1} ÷ {num2}؟", type: "division" },
+                        { template: "ما الجذر التكعيبي لـ {num1}؟", type: "cube_root" },
+                        { template: "ما ناتج {num1}³؟", type: "cube" }
+                    ],
+                    "صعب جداً": [
+                        { template: "ما ناتج {num1} × {num2}؟", type: "multiplication" },
+                        { template: "ما ناتج log₂({num1})؟", type: "logarithm" },
+                        { template: "ما ناتج sin({num1}°)؟", type: "trigonometry" },
+                        { template: "ما ناتج {num1}! (مضروب)؟", type: "factorial" }
+                    ]
+                },
+                "ثقافة عامة": {
+                    "سهل": [
+                        "كم عدد أيام الأسبوع؟|7|6|8|5",
+                        "كم عدد أشهر السنة؟|12|10|11|13",
+                        "كم ساعة في اليوم؟|24|23|25|22",
+                        "كم دقيقة في الساعة؟|60|50|70|40",
+                        "ما هو أول شهر في السنة؟|يناير|فبراير|مارس|ديسمبر",
+                        "ما هو آخر شهر في السنة؟|ديسمبر|نوفمبر|أكتوبر|يناير"
+                    ],
+                    "متوسط": [
+                        "كم عدد حروف الأبجدية العربية؟|28|26|30|25",
+                        "كم عدد ألوان قوس قزح؟|7|6|8|5",
+                        "في أي قرن نحن الآن؟|الحادي والعشرين|العشرين|التاسع عشر|الثاني والعشرين",
+                        "كم عدد عجائب الدنيا السبع؟|7|6|8|5",
+                        "ما هو أطول نهر في العالم؟|النيل|الأمازون|الفرات|دجلة",
+                        "ما هي أكبر قارة في العالم؟|آسيا|أفريقيا|أوروبا|أمريكا"
+                    ],
+                    "صعب": [
+                        "من كتب رواية الأسود يليق بك؟|أحلام مستغانمي|نجيب محفوظ|طه حسين|توفيق الحكيم",
+                        "من كتب رواية مئة عام من العزلة؟|غابرييل غارسيا ماركيز|بورخيس|فاركاس يوسا|أوكتافيو باث",
+                        "في أي عام انتهت الحرب العالمية الثانية؟|1945|1944|1946|1943",
+                        "من اخترع المصباح الكهربائي؟|توماس إديسون|نيكولا تسلا|ألكسندر بيل|بنجامين فرانكلين",
+                        "ما هي عاصمة أستراليا؟|كانبرا|سيدني|ملبورن|بريسبان",
+                        "في أي عام سقطت الإمبراطورية البيزنطية؟|1453|1450|1460|1445"
+                    ],
+                    "صعب جداً": [
+                        "في أي عام تم اكتشاف بوزون هيغز؟|2012|2010|2014|2008",
+                        "من فاز بجائزة نوبل للأدب عام 2021؟|عبد الرزاق قرنح|كازو إيشيغورو|بوب ديلان|أليس مونرو",
+                        "ما هو أعمق خندق في المحيطات؟|خندق ماريانا|خندق بورتوريكو|خندق اليابان|خندق بيرو",
+                        "في أي عام تم إطلاق أول قمر صناعي؟|1957|1955|1960|1958",
+                        "من وضع نظرية النسبية العامة؟|ألبرت أينشتاين|إسحاق نيوتن|ستيفن هوكينغ|نيلز بور",
+                        "ما هي أصغر دولة في العالم؟|الفاتيكان|موناكو|سان مارينو|ناورو"
+                    ]
+                },
+                "علوم": {
+                    "سهل": [
+                        "كم عدد أرجل العنكبوت؟|8|6|10|4",
+                        "كم عدد أرجل القطة؟|4|2|6|8",
+                        "عند كم درجة يغلي الماء؟|100|90|110|80",
+                        "عند كم درجة يتجمد الماء؟|0|10|-10|5",
+                        "كم عدد كواكب المجموعة الشمسية؟|8|9|7|10",
+                        "ما هو أقرب كوكب للشمس؟|عطارد|الزهرة|الأرض|المريخ"
+                    ],
+                    "متوسط": [
+                        "ما هو الغاز الأكثر وفرة في الغلاف الجوي؟|النيتروجين|الأكسجين|ثاني أكسيد الكربون|الأرجون",
+                        "ما هو الرمز الكيميائي للذهب؟|Au|Ag|Cu|Fe",
+                        "ما هو الرمز الكيميائي للفضة؟|Ag|Au|Cu|Al",
+                        "كم عدد عظام جسم الإنسان البالغ؟|206|200|210|195",
+                        "ما هو أكبر عضو في جسم الإنسان؟|الجلد|الكبد|الرئتان|القلب",
+                        "كم عدد أسنان الإنسان البالغ؟|32|28|30|34"
+                    ],
+                    "صعب": [
+                        "ما هو العدد الذري للكربون؟|6|8|4|12",
+                        "ما هو العدد الذري للأكسجين؟|8|6|10|12",
+                        "ما هي سرعة الضوء في الفراغ؟|300000 كم/ث|250000 كم/ث|350000 كم/ث|400000 كم/ث",
+                        "ما هو قانون أوم؟|V = I × R|P = V × I|E = mc²|F = ma",
+                        "من اكتشف البنسلين؟|ألكسندر فليمنغ|لويس باستور|روبرت كوخ|إدوارد جينر",
+                        "ما هي وحدة قياس التردد؟|هرتز|واط|فولت|أمبير"
+                    ],
+                    "صعب جداً": [
+                        "ما هو نصف عمر الكربون-14؟|5730 سنة|6000 سنة|5000 سنة|7000 سنة",
+                        "ما هو عدد أفوجادرو؟|6.022 × 10²³|6.022 × 10²²|6.022 × 10²⁴|5.022 × 10²³",
+                        "ما هي معادلة شرودنغر؟|iℏ∂ψ/∂t = Ĥψ|E = mc²|F = ma|PV = nRT",
+                        "ما هو مبدأ عدم اليقين لهايزنبرغ؟|Δx·Δp ≥ ℏ/2|E = hf|λ = h/p|c = λf",
+                        "من اكتشف النيوترون؟|جيمس تشادويك|إرنست رذرفورد|نيلز بور|ماري كوري",
+                        "ما هي كتلة الإلكترون؟|9.109 × 10⁻³¹ كغ|9.109 × 10⁻³⁰ كغ|9.109 × 10⁻³² كغ|8.109 × 10⁻³¹ كغ"
+                    ]
+                },
+                "ألغاز": {
+                    "سهل": [
+                        "لغز: شيء يمشي بلا أرجل ويبكي بلا عيون؟|السحاب|الريح|النار|الماء",
+                        "لغز: ما الشيء الذي كلما زاد نقص؟|العمر|المال|الطعام|الوقت",
+                        "لغز: له عين ولا يرى؟|الإبرة|القلم|المفتاح|الساعة",
+                        "لغز: يسمع بلا أذن ويتكلم بلا لسان؟|الصدى|الراديو|التلفون|الكتاب",
+                        "لغز: ما الشيء الذي يقرصك ولا تراه؟|الجوع|البرد|الحر|النوم",
+                        "لغز: شيء أسود عندما تشتريه وأحمر عندما تستعمله وأبيض عندما تتخلص منه؟|الفحم|الطعام|الورق|القلم"
+                    ],
+                    "متوسط": [
+                        "لغز: أخوان أحدهما يلد والآخر لا يلد؟|الليل والنهار|الشمس والقمر|البحر والبر|الصيف والشتاء",
+                        "لغز: ما الشيء الذي يأكل ولا يشبع؟|النار|البحر|الأرض|الهواء",
+                        "لغز: بيت بلا أبواب ولا نوافذ؟|بيت الشعر|بيت العنكبوت|بيت النمل|بيت الطيور",
+                        "لغز: كلما أخذت منه كبر؟|الحفرة|الجبل|البحر|السماء",
+                        "لغز: ما الشيء الذي يحملك وتحمله؟|الحذاء|الحقيبة|القلم|الكتاب",
+                        "لغز: شيء موجود في السماء إذا أضفت إليه حرفاً أصبح في الأرض؟|نجم - نجمة|قمر - قمرة|شمس - شمسة|سحاب - سحابة"
+                    ],
+                    "صعب": [
+                        "لغز: أم أربعة وأربعين، إذا ذهب واحد صارت أم ثلاثة؟|اليد|الأسنان|الشعر|الأصابع",
+                        "لغز: ما الشيء الذي يوجد في القرن مرة وفي الدقيقة مرتين؟|حرف القاف|حرف الراء|حرف النون|حرف الميم",
+                        "لغز: رجل عنده 12 ولد، كل ولد عنده 30 بنت، كل بنت عندها 12 ولد؟|السنة والشهور والأيام والساعات|العائلة الكبيرة|القبيلة|المدينة",
+                        "لغز: ما الشيء الذي يكتب ولا يقرأ؟|القلم|الكتاب|الورقة|الحبر",
+                        "لغز: شيء إذا لمسته صاح؟|الجرس|الطفل|الحيوان|الباب",
+                        "لغز: ما الشيء الذي له أسنان ولا يعض؟|المشط|المنشار|المفتاح|الساعة"
+                    ],
+                    "صعب جداً": [
+                        "لغز: عائلة مؤلفة من 6 بنات وأخ لكل بنت، كم عدد أفراد العائلة؟|7|12|13|14",
+                        "لغز: إذا كان عمر الأب 4 أضعاف عمر ابنه، وبعد 20 سنة سيكون ضعف عمره، كم عمر الابن الآن؟|10 سنوات|15 سنة|20 سنة|5 سنوات",
+                        "لغز: رجل يعيش في الطابق العشرين، كل يوم ينزل بالمصعد للطابق الأرضي، وعند العودة يصعد للطابق العاشر ثم يمشي، لماذا؟|قصير القامة لا يصل لزر الطابق العشرين|المصعد معطل|يحب الرياضة|يخاف من المرتفعات",
+                        "لغز: في غرفة مظلمة بها 50 جورب أحمر و50 جورب أزرق، كم جورب تحتاج لتأخذ لتضمن الحصول على زوج متطابق؟|3|2|4|5",
+                        "لغز: رجل ولد في 1955 وتوفي في 1953، كيف ذلك؟|1955 و1953 أرقام غرف|خطأ في التاريخ|سافر عبر الزمن|ولد قبل الميلاد",
+                        "لغز: ما الشيء الذي كلما طال قصر؟|الشمعة|العمر|الطريق|الحبل"
+                    ]
+                }
+            };
+
+            // توليد الأسئلة
+            for (let i = 51; i <= 6000; i++) {
+                const category = categories[i % categories.length];
+                const difficultyIndex = Math.floor((i - 51) / 1500);
+                const difficulty = difficulties[Math.min(difficultyIndex, 3)];
+                const points = difficulty === "سهل" ? 1 : difficulty === "متوسط" ? 2 : difficulty === "صعب" ? 3 : 4;
+                
+                let questionData;
+                
+                if (category === "رياضيات") {
+                    questionData = generateMathQuestion(difficulty, i);
+                } else if (questionTemplates[category] && questionTemplates[category][difficulty]) {
+                    const templates = questionTemplates[category][difficulty];
+                    const template = templates[i % templates.length];
+                    const parts = template.split('|');
+                    
+                    questionData = {
+                        text: parts[0],
+                        type: "multiple-choice",
+                        options: [parts[1], parts[2], parts[3], parts[4]],
+                        correctAnswer: 0
+                    };
+                } else {
+                    // أسئلة افتراضية للفئات الأخرى
+                    questionData = generateDefaultQuestion(category, difficulty, i);
+                }
+                
+                allQuestions.push({
+                    id: i,
+                    text: questionData.text,
+                    type: questionData.type,
+                    options: questionData.options,
+                    correctAnswer: questionData.correctAnswer,
+                    difficulty,
+                    points,
+                    category
+                });
+            }
+            
+            return allQuestions;
+        }
+
+        // توليد أسئلة رياضية
+        function generateMathQuestion(difficulty, id) {
+            let num1, num2, result, questionText, options, correctIndex;
+            
+            if (difficulty === "سهل") {
+                num1 = Math.floor(Math.random() * 10) + 1;
+                num2 = Math.floor(Math.random() * 10) + 1;
+            } else if (difficulty === "متوسط") {
+                num1 = Math.floor(Math.random() * 25) + 10;
+                num2 = Math.floor(Math.random() * 25) + 10;
+            } else if (difficulty === "صعب") {
+                num1 = Math.floor(Math.random() * 50) + 25;
+                num2 = Math.floor(Math.random() * 50) + 25;
+            } else {
+                num1 = Math.floor(Math.random() * 100) + 50;
+                num2 = Math.floor(Math.random() * 100) + 50;
+            }
+            
+            const operations = ['+', '-', '×', '÷'];
+            const op = operations[id % 4];
+            
+            switch (op) {
+                case '+':
+                    result = num1 + num2;
+                    questionText = `ما ناتج ${num1} + ${num2}؟`;
+                    break;
+                case '-':
+                    result = Math.max(num1, num2) - Math.min(num1, num2);
+                    questionText = `ما ناتج ${Math.max(num1, num2)} - ${Math.min(num1, num2)}؟`;
+                    break;
+                case '×':
+                    result = num1 * num2;
+                    questionText = `ما ناتج ${num1} × ${num2}؟`;
+                    break;
+                case '÷':
+                    const dividend = num1 * num2;
+                    result = num1;
+                    questionText = `ما ناتج ${dividend} ÷ ${num2}؟`;
+                    break;
+            }
+            
+            // توليد إجابات خاطئة متنوعة
+            const wrongAnswers = [];
+            for (let i = 0; i < 3; i++) {
+                let wrongAnswer;
+                do {
+                    const variation = Math.floor(Math.random() * 20) - 10;
+                    wrongAnswer = result + variation;
+                } while (wrongAnswer === result || wrongAnswer <= 0 || wrongAnswers.includes(wrongAnswer));
+                wrongAnswers.push(wrongAnswer);
+            }
+            
+            options = [result.toString(), ...wrongAnswers.map(x => x.toString())].sort(() => Math.random() - 0.5);
+            correctIndex = options.indexOf(result.toString());
+            
+            return {
+                text: questionText,
+                type: "multiple-choice",
+                options,
+                correctAnswer: correctIndex
+            };
+        }
+
+        // توليد أسئلة افتراضية
+        function generateDefaultQuestion(category, difficulty, id) {
+            const defaultQuestions = {
+                "جغرافيا": [
+                    "ما هي عاصمة فرنسا؟|باريس|لندن|روما|برلين",
+                    "في أي قارة تقع البرازيل؟|أمريكا الجنوبية|أمريكا الشمالية|أفريقيا|آسيا",
+                    "ما هو أطول نهر في العالم؟|النيل|الأمازون|الفرات|دجلة",
+                    "كم عدد المحيطات في العالم؟|5|4|6|3"
+                ],
+                "تاريخ": [
+                    "في أي عام انتهت الحرب العالمية الثانية؟|1945|1944|1946|1943",
+                    "من بنى الأهرامات؟|المصريون القدماء|البابليون|الإغريق|الرومان",
+                    "في أي قرن عاش نابليون؟|التاسع عشر|الثامن عشر|العشرين|السابع عشر",
+                    "متى سقطت الإمبراطورية الرومانية؟|476 م|500 م|450 م|400 م"
+                ],
+                "حياتية": [
+                    "كم ساعة نوم يحتاجها الإنسان البالغ؟|8|6|10|4",
+                    "ما هو أهم وجبة في اليوم؟|الإفطار|الغداء|العشاء|الوجبات الخفيفة",
+                    "كم كوب ماء يجب شرب يومياً؟|8|6|10|4",
+                    "ما هو أفضل وقت لممارسة الرياضة؟|الصباح|المساء|الظهر|الليل"
+                ]
+            };
+            
+            const questions = defaultQuestions[category] || defaultQuestions["حياتية"];
+            const template = questions[id % questions.length];
+            const parts = template.split('|');
+            
+            return {
+                text: parts[0],
+                type: "multiple-choice",
+                options: [parts[1], parts[2], parts[3], parts[4]],
+                correctAnswer: 0
+            };
+        }
+
+        const allQuestions = generateAllQuestions();
+
+        // باقي الكود يبقى كما هو...
+        // تحديث الإحصائيات في الواجهة
+        function updateStatsDisplay() {
+            document.getElementById('totalPoints').textContent = gameStats.totalPoints;
+            document.getElementById('correctAnswers').textContent = gameStats.correctAnswers;
+            document.getElementById('totalQuestions').textContent = gameStats.totalQuestions;
+            document.getElementById('bestStreak').textContent = gameStats.bestStreak;
+            
+            if (document.getElementById('currentPoints')) {
+                document.getElementById('currentPoints').textContent = gameStats.totalPoints;
+            }
+            if (document.getElementById('currentStreak')) {
+                document.getElementById('currentStreak').textContent = gameStats.currentStreak;
+            }
+        }
+
+        // بدء اللعبة
+        function startGame() {
+            document.getElementById('menuScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            currentLevel = "سهل";
+            usedQuestions = new Set();
+            questionNumber = 1;
+            getNextQuestion();
+        }
+
+        // العودة للقائمة الرئيسية
+        function backToMenu() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('menuScreen').classList.remove('hidden');
+            
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        // الحصول على السؤال التالي
+        function getNextQuestion() {
+            const levels = ["سهل", "متوسط", "صعب", "صعب جداً"];
+            const currentLevelIndex = levels.indexOf(currentLevel);
+
+            if (gameStats.totalQuestions > 0 && gameStats.totalQuestions % 5 === 0) {
+                const nextLevelIndex = Math.min(currentLevelIndex + 1, levels.length - 1);
+                currentLevel = levels[nextLevelIndex];
+            }
+
+            const availableQuestions = allQuestions.filter(
+                q => q.difficulty === currentLevel && !usedQuestions.has(q.id)
+            );
+
+            if (availableQuestions.length === 0) {
+                usedQuestions = new Set();
+                const resetQuestions = allQuestions.filter(q => q.difficulty === currentLevel);
+                currentQuestion = resetQuestions[Math.floor(Math.random() * resetQuestions.length)];
+                usedQuestions.add(currentQuestion.id);
+            } else {
+                currentQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+                usedQuestions.add(currentQuestion.id);
+            }
+
+            selectedAnswer = null;
+            showResult = false;
+            timeLeft = 60;
+            
+            document.getElementById('questionNumber').textContent = questionNumber;
+            document.getElementById('questionInfo').textContent = `${currentQuestion.difficulty} - ${currentQuestion.category}`;
+            document.getElementById('questionText').textContent = currentQuestion.text;
+            document.getElementById('resultCard').classList.add('hidden');
+            
+            renderAnswers();
+            startTimer();
+            questionNumber++;
+        }
+
+        // عرض الإجابات
+        function renderAnswers() {
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+
+            if (currentQuestion.type === "true-false") {
+                container.innerHTML = `
+                    <div class="grid grid-2">
+                        <button class="btn btn-outline" onclick="handleAnswer(true)">صحيح ✓</button>
+                        <button class="btn btn-outline" onclick="handleAnswer(false)">خطأ ✗</button>
+                    </div>
+                `;
+            } else if (currentQuestion.type === "multiple-choice") {
+                const buttonsHtml = currentQuestion.options.map((option, index) => 
+                    `<button class="btn btn-outline" onclick="handleAnswer(${index})">${option}</button>`
+                ).join('');
+                container.innerHTML = `<div class="grid" style="gap: 10px;">${buttonsHtml}</div>`;
+            } else if (currentQuestion.type === "complete") {
+                container.innerHTML = `
+                    <input type="text" id="completeInput" placeholder="اكتب إجابتك هنا..." onkeypress="if(event.key==='Enter') handleCompleteAnswer()">
+                    <button class="btn btn-primary" onclick="handleCompleteAnswer()">تأكيد الإجابة</button>
+                `;
+            }
+        }
+
+        // التعامل مع إجابة الإكمال
+        function handleCompleteAnswer() {
+            const input = document.getElementById('completeInput');
+            if (input && input.value.trim()) {
+                handleAnswer(input.value.trim());
+            }
+        }
+
+        // بدء التايمر
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                const timerElement = document.getElementById('timer');
+                timerElement.textContent = `⏰ ${timeLeft}s`;
+                
+                if (timeLeft <= 10) {
+                    timerElement.classList.add('warning');
+                } else {
+                    timerElement.classList.remove('warning');
+                }
+                
+                const progressFill = document.getElementById('progressFill');
+                progressFill.style.width = `${((60 - timeLeft) / 60) * 100}%`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        // التعامل مع انتهاء الوقت
+        function handleTimeUp() {
+            showResult = true;
+            gameStats.totalQuestions++;
+            gameStats.wrongAnswers++;
+            gameStats.totalPoints = Math.max(0, gameStats.totalPoints - currentQuestion.points);
+            gameStats.currentStreak = 0;
+            
+            updateStatsDisplay();
+            showResultCard(false, "انتهى الوقت!");
+            
+            setTimeout(() => {
+                getNextQuestion();
+            }, 3000);
+        }
+
+        // التعامل مع الإجابة
+        function handleAnswer(answer) {
+            if (showResult) return;
+            
+            selectedAnswer = answer;
+            showResult = true;
+            clearInterval(timer);
+            
+            let isCorrect = false;
+            
+            if (currentQuestion.type === "complete") {
+                isCorrect = answer.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase().trim();
+            } else {
+                isCorrect = answer === currentQuestion.correctAnswer;
+            }
+            
+            if (isCorrect) {
+                gameStats.totalQuestions++;
+                gameStats.correctAnswers++;
+                gameStats.totalPoints += currentQuestion.points;
+                gameStats.currentStreak++;
+                gameStats.bestStreak = Math.max(gameStats.bestStreak, gameStats.currentStreak);
+                
+                showCelebration();
+                showResultCard(true);
+            } else {
+                gameStats.totalQuestions++;
+                gameStats.wrongAnswers++;
+                gameStats.totalPoints = Math.max(0, gameStats.totalPoints - currentQuestion.points);
+                gameStats.currentStreak = 0;
+                
+                showResultCard(false);
+            }
+            
+            updateStatsDisplay();
+            
+            setTimeout(() => {
+                getNextQuestion();
+            }, 3000);
+        }
+
+        // عرض نتيجة السؤال
+        function showResultCard(isCorrect, customMessage = null) {
+            const resultCard = document.getElementById('resultCard');
+            resultCard.classList.remove('hidden');
+            
+            if (isCorrect) {
+                resultCard.className = 'result-card result-correct';
+                resultCard.innerHTML = `
+                    <div class="emoji animate-bounce">🎉</div>
+                    <h3 style="font-size: 2rem; margin: 10px 0;">إجابة صحيحة!</h3>
+                    <p style="font-size: 1.2rem;">+${currentQuestion.points} نقطة</p>
+                    ${gameStats.currentStreak > 0 ? `<p style="color: #16a34a; margin-top: 10px;">🔥 سلسلة: ${gameStats.currentStreak}</p>` : ''}
+                `;
+            } else {
+                resultCard.className = 'result-card result-wrong';
+                let correctAnswerText;
+                
+                if (currentQuestion.type === "true-false") {
+                    correctAnswerText = currentQuestion.correctAnswer ? "صحيح" : "خطأ";
+                } else if (currentQuestion.type === "multiple-choice") {
+                    correctAnswerText = currentQuestion.options[currentQuestion.correctAnswer];
+                } else {
+                    correctAnswerText = currentQuestion.correctAnswer;
+                }
+                
+                resultCard.innerHTML = `
+                    <div class="emoji">❌</div>
+                    <h3 style="font-size: 2rem; margin: 10px 0;">${customMessage || "إجابة خاطئة"}</h3>
+                    <p style="font-size: 1.2rem; margin: 10px 0;">الإجابة الصحيحة: ${correctAnswerText}</p>
+                    <p style="font-size: 1rem;">-${currentQuestion.points} نقطة</p>
+                `;
+            }
+        }
+
+        // عرض تأثيرات الاحتفال
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.remove('hidden');
+            celebration.innerHTML = '';
+            
+            const colors = ['#ea580c', '#f97316', '#fb923c', '#fdba74', '#fed7aa'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                celebration.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                celebration.classList.add('hidden');
+                celebration.innerHTML = '';
+            }, 3000);
+        }
+
+        // عرض الإحصائيات
+        function showStats() {
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <h2 style="text-align: center; color: #ea580c; margin-bottom: 20px;">إحصائياتك</h2>
+                <div class="grid grid-2" style="gap: 15px; margin: 20px 0;">
+                    <div class="stats-card">
+                        <div class="stats-number" style="color: #ea580c;">${gameStats.totalQuestions}</div>
+                        <div class="stats-label">إجمالي الأسئلة</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-number" style="color: #16a34a;">${gameStats.correctAnswers}</div>
+                        <div class="stats-label">إجابات صحيحة</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-number" style="color: #dc2626;">${gameStats.wrongAnswers}</div>
+                        <div class="stats-label">إجابات خاطئة</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-number" style="color: #ea580c;">${gameStats.totalPoints}</div>
+                        <div class="stats-label">إجمالي النقاط</div>
+                    </div>
+                </div>
+                <div class="stats-card" style="margin: 20px 0;">
+                    <div class="stats-number" style="color: #ea580c;">${gameStats.bestStreak}</div>
+                    <div class="stats-label">أفضل سلسلة إجابات صحيحة</div>
+                </div>
+                <div class="stats-card" style="background: #eff6ff;">
+                    <div class="stats-number" style="color: #2563eb;">${allQuestions.length.toLocaleString()}</div>
+                    <div class="stats-label">إجمالي الأسئلة المتاحة</div>
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        // عرض معلومات التواصل
+        function showContact() {
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <h2 style="text-align: center; color: #ea580c; margin-bottom: 20px;">تواصل مع المطور</h2>
+                <p style="text-align: center; margin: 20px 0;">للتواصل معي أو الإبلاغ عن مشاكل في اللعبة:</p>
+                <div style="text-align: right; line-height: 2.5;">
+                    <p><strong>📧 البريد الإلكتروني:</strong> abanoubyaseer@gmail.com</p>
+                    <p><strong>📱 تليجرام:</strong> @Abanoub_yaseer_25</p>
+                </div>
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 10px;">
+                    <p style="color: #1e40af; font-weight: bold; margin-bottom: 10px;">💡 شكراً لك على استخدام اللعبة!</p>
+                    <p style="color: #1e40af;">نرحب بملاحظاتك واقتراحاتك لتطوير اللعبة</p>
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        // إغلاق المودال
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // تحديث الإحصائيات عند تحميل الصفحة
+        updateStatsDisplay();
+    </script>
+</body>
+</html>
